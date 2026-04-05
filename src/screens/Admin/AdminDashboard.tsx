@@ -179,8 +179,22 @@ export default function AdminDashboard() {
           value={noticeBody}
           onChangeText={setNoticeBody}
         />
-        <TouchableOpacity style={styles.publishBtn} onPress={handlePublishNotice}>
-          <Text style={styles.publishBtnText}>Broadcast Update</Text>
+        <TouchableOpacity 
+          style={styles.publishBtn} 
+          onPress={() => {
+            if (Platform.OS === 'web') {
+              if (confirm('Are you sure you want to publish this notice to all students?')) {
+                handlePublishNotice();
+              }
+            } else {
+              Alert.alert('Publish Notice', 'Send this notice to all students?', [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Publish', onPress: handlePublishNotice }
+              ]);
+            }
+          }}
+        >
+          <Text style={styles.publishBtnText}>Publish Notice</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={{marginTop: 14, alignItems: 'center'}} onPress={handleCancelNotice}>
