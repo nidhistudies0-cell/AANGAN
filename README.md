@@ -10,7 +10,10 @@ Purpose: A secure peer-to-peer resource sharing system.Action: Post borrow reque
 
 🛠️ Admin Interface (Warden & Committee)Official Notices: Warden’s office can broadcast formal announcements.Event Management: Hostel committees can create and manage hostel-wide events.Emergency Control: Authorized personnel can trigger high-level emergency alerts.
 
-💻 Tech Stack (Proposed)LayerTechnologyFrontendReact Native / Expo (Cross-platform iOS & Android)Backend/AuthFirebase (Authentication, Firestore, Cloud Messaging)StylingStyled Components / Tailwind CSSState MgmtReact Context API / Redux ToolkitCommunicationFirebase Realtime Database (for Group Chats)
+💻 Tech Stack (Proposed) Layer Technology 
+Frontend React Native / Expo (Cross-platform iOS & Android)
+Backend/AuthFirebase (Authentication, Firestore, Cloud Messaging)
+Styling Styled Components / Tailwind CSS State Mgmt React Context API / Redux Toolkit Communication Firebase Real time Database (for Group Chats)
 
 
 📂 Project StructurePlaintextAANGAN/
@@ -33,6 +36,14 @@ Purpose: A secure peer-to-peer resource sharing system.Action: Post borrow reque
 
 🛠️ Installation & SetupClone the repository:Bashgit clone https://github.com/yourusername/AANGAN.git
 cd AANGAN
-Install dependencies:Bashnpm install
-Configure Firebase:Create a project in Firebase Console.Enable Email/Password Auth and Firestore.Create a .env file in the root directory and add your Firebase credentials.Run the app:Bashnpx expo start
-📢 Notifications LogicLocal Notifications: For borrowing reminders and chat messages.Global Broadcasts: For Emergency SOS (Pop-ups) and Warden Announcements.Context-Aware: CoLab and Share Ring requests are primarily visible to users within the same hostel block/compound.🤝 ContributingContributions are welcome! Please open an issue or submit a pull request for any feature suggestions or bug fixes.
+Install dependencies: Bash npm install
+Configure Firebase: Create a project in Firebase Console.
+Enable Email/Password Auth and Firestore.
+Create a .env file in the root directory and add your Firebase credentials.
+Run the app: Bash npx expo start
+
+📢 Notifications Logic Local Notifications: For borrowing reminders and chat messages.
+Global Broadcasts: For Emergency SOS (Pop-ups) and Warden Announcements.
+Context-Aware: CoLab and Share Ring requests are primarily visible to users within the same hostel block/compound.
+
+🤝 Contributing Contributions are welcome! Please open an issue or submit a pull request for any feature suggestions or bug fixes.
