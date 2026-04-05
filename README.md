@@ -16,10 +16,13 @@ Backend/AuthFirebase (Authentication, Firestore, Cloud Messaging)
 Styling Styled Components / Tailwind CSS State Mgmt React Context API / Redux Toolkit Communication Firebase Real time Database (for Group Chats)
 
 
-📂 Project StructurePlaintextAANGAN/
+# 📂 Project Structure
+
+```text
+AANGAN/
 ├── assets/             # Images, Fonts, and Icons
 ├── src/
-│   ├── components/     # Reusable UI components (Buttons, Cards, Inputs)
+│   ├── components/     # Reusable UI (Buttons, Cards, Inputs)
 │   ├── navigation/     # Auth, App, and Admin Navigators
 │   ├── screens/
 │   │   ├── Auth/       # Login, Signup, Onboarding
@@ -29,7 +32,7 @@ Styling Styled Components / Tailwind CSS State Mgmt React Context API / Redux To
 │   │   └── Admin/      # Warden/Committee Dashboard
 │   ├── firebase/       # Firebase config and utility functions
 │   ├── theme/          # Global styles and colors
-│   └── utils/          # Helper functions (Date formatting, Validations)
+│   └── utils/          # Helper functions (Date, Validations)
 ├── .env                # Environment variables (Firebase Keys)
 └── App.tsx             # Main entry point
 
