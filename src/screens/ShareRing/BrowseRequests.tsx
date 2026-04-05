@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Modal, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Modal, Alert, Platform } from 'react-native';
 import { colors, typography, ui } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
@@ -29,8 +29,10 @@ export default function BrowseRequests() {
   }, []);
 
   const filteredPosts = posts.filter(post => 
-    post.item?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    post.org?.toLowerCase().includes(searchQuery.toLowerCase())
+    post.status !== 'removed' && (
+      post.item?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      post.org?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
   );
 
   const handleLend = async (post: any) => {
@@ -74,16 +76,24 @@ export default function BrowseRequests() {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert('Remove Request', 'Delete your borrow request?', [
-      {text: 'Cancel', style: 'cancel'},
-      {text: 'Delete', style: 'destructive', onPress: async () => {
-        try {
-          await deleteDoc(doc(db, 'borrow_requests', id));
-        } catch(e: any) {
-          Alert.alert("Error", e.message);
-        }
-      }}
-    ]);
+    const performDelete = async () => {
+      try {
+        await updateDoc(doc(db, 'borrow_requests', id), { status: 'removed' });
+      } catch(e: any) {
+        Alert.alert("Error", e.message);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm('Delete your borrow request?')) {
+        performDelete();
+      }
+    } else {
+      Alert.alert('Remove Request', 'Delete your borrow request?', [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', style: 'destructive', onPress: performDelete}
+      ]);
+    }
   };
 
   const renderItem = ({ item }: any) => (

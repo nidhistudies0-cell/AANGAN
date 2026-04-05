@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, FlatList, Platform } from 'react-native';
 import { colors, typography, ui } from '../../theme';
 import { collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
@@ -47,16 +47,24 @@ export default function AdminDashboard() {
     }
   };
   const handleDeleteNotice = async (noticeId: string) => {
-    Alert.alert('Remove Notice', 'Are you sure you want to delete this notice permanently?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => {
-          try {
-            await deleteDoc(doc(db, 'notices', noticeId));
-          } catch(e: any) {
-            Alert.alert('Error', e.message);
-          }
-      }}
-    ]);
+    const performDelete = async () => {
+      try {
+        await deleteDoc(doc(db, 'notices', noticeId));
+      } catch(e: any) {
+        Alert.alert('Error', e.message);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm('Are you sure you want to delete this notice permanently?')) {
+        performDelete();
+      }
+    } else {
+      Alert.alert('Remove Notice', 'Are you sure you want to delete this notice permanently?', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: performDelete }
+      ]);
+    }
   };
 
   const handleResolveIssue = async (issueId: string) => {
@@ -75,29 +83,37 @@ export default function AdminDashboard() {
      setNoticeBody('');
   };
   const triggerEmergency = async (type: string) => {
-    Alert.alert(
-      `Trigger ${type} Emergency?`,
-      'This will send an immediate full-screen alert to all students. Are you sure?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'ACTIVATE', 
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await addDoc(collection(db, 'emergency_alerts'), {
-                type,
-                message: `URGENT: ${type} situation declared. Please follow warden instructions immediately.`,
-                timestamp: new Date().toISOString()
-              });
-              Alert.alert('Alert Broadcasted', 'Emergency push notification sent.');
-            } catch (e: any) {
-              Alert.alert('Error', e.message);
-            }
+    const activateEmergency = async () => {
+      try {
+        await addDoc(collection(db, 'emergency_alerts'), {
+          type,
+          message: `URGENT: ${type} situation declared. Please follow warden instructions immediately.`,
+          timestamp: new Date().toISOString()
+        });
+        Alert.alert('Alert Broadcasted', 'Emergency push notification sent.');
+      } catch (e: any) {
+        Alert.alert('Error', e.message);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm(`Trigger ${type} Emergency?\n\nThis will send an immediate full-screen alert to all students. Are you sure?`)) {
+        activateEmergency();
+      }
+    } else {
+      Alert.alert(
+        `Trigger ${type} Emergency?`,
+        'This will send an immediate full-screen alert to all students. Are you sure?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'ACTIVATE', 
+            style: 'destructive',
+            onPress: activateEmergency
           }
-        }
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const renderIssue = ({ item }: any) => {

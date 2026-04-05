@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Platform } from 'react-native';
 import { colors, typography, ui } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 import { collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
@@ -34,7 +34,7 @@ export default function BrowseInSync() {
     const matchesSearch = post.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           post.org?.toLowerCase().includes(searchQuery.toLowerCase());
                           
-    return isUpcoming && matchesSearch;
+    return isUpcoming && matchesSearch && post.status !== 'removed';
   });
 
   const handleJoin = async (item: any) => {
@@ -68,16 +68,24 @@ export default function BrowseInSync() {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert('Remove Post', 'Delete your post permanently?', [
-      {text: 'Cancel', style: 'cancel'},
-      {text: 'Delete', style: 'destructive', onPress: async () => {
-        try {
-          await deleteDoc(doc(db, 'posts_insync', id));
-        } catch(e: any) {
-          Alert.alert("Error", e.message);
-        }
-      }}
-    ]);
+    const performDelete = async () => {
+      try {
+        await updateDoc(doc(db, 'posts_insync', id), { status: 'removed' });
+      } catch(e: any) {
+        Alert.alert("Error", e.message);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm('Delete your post permanently?')) {
+        performDelete();
+      }
+    } else {
+      Alert.alert('Remove Post', 'Delete your post permanently?', [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', style: 'destructive', onPress: performDelete}
+      ]);
+    }
   };
 
   const renderItem = ({ item }: any) => (

@@ -7,7 +7,7 @@ import { ActivityIndicator, View } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, collection, query, orderBy, limit } from 'firebase/firestore';
 import { auth, db } from './src/firebase';
 import { colors, typography, ui } from './src/theme';
 import EmergencyModal from './src/components/EmergencyModal';
@@ -27,11 +27,22 @@ export default function App() {
   const [emergencyVisible, setEmergencyVisible] = useState(false);
   const [emergencyData, setEmergencyData] = useState({ type: '', message: '', timestamp: '' });
 
-  // Mock function to simulate receiving an alert
-  const triggerMockAlert = (type: string, message: string) => {
-     setEmergencyData({ type, message, timestamp: new Date().toLocaleString() });
-     setEmergencyVisible(true);
-  };
+  useEffect(() => {
+    const qEmergency = query(collection(db, 'emergency_alerts'), orderBy('timestamp', 'desc'), limit(1));
+    const unsubEmergency = onSnapshot(qEmergency, (snapshot) => {
+      if(!snapshot.empty) {
+        const latestInfo = snapshot.docs[0].data();
+        const alertTime = new Date(latestInfo.timestamp).getTime();
+        const now = Date.now();
+        // Trigger popup if the emergency was strictly broadcasted within the last 5 minutes (300000ms)
+        if(now - alertTime < 300000) {
+          setEmergencyData({ type: latestInfo.type, message: latestInfo.message, timestamp: new Date(latestInfo.timestamp).toLocaleString() });
+          setEmergencyVisible(true);
+        }
+      }
+    });
+    return () => unsubEmergency();
+  }, []);
 
   useEffect(() => {
     let unsubsDoc: any = null;
