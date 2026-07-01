@@ -35,7 +35,7 @@ AANGAN/
 │   └── utils/          # Helper functions (Date, Validations)
 ├── .env                # Environment variables (Firebase Keys)
 └── App.tsx             # Main entry point
-
+```
 
 🛠️ Installation & SetupClone the repository:Bashgit clone https://github.com/yourusername/AANGAN.git
 cd AANGAN
