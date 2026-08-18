@@ -2,7 +2,7 @@ export const colors = {
   // Primary accent
   clay: { primary: '#C17F5B', light: '#F5EDE4', dark: '#7A4A2E', deep: '#3D2010' },
   // Secondary - InSync (Leisure)
-  moss: { secondary: '#6B7C5E', light: '#EAF0E5', dark: '#3A4D30' },
+  moss: { secondary: '#3c5c23', light: '#EAF0E5', dark: '#3A4D30' },
   // Tertiary - ShareRing (Borrow)
   bark: { tertiary: '#5C3D1E', light: '#EDE5D8' },
   // Surfaces and borders
@@ -12,7 +12,7 @@ export const colors = {
   // Card background
   cream: { card: '#FFFDF8' },
   // Emergency / alert
-  rust: { alert: '#B85C38', light: '#F7EAE3' },
+  rust: { alert: '#be5d36', light: '#F7EAE3' },
   // Neutral labels / Admin
   stone: { neutral: '#8C8070', light: '#F0EDE7' },
   // Text and soft colors
@@ -45,7 +45,7 @@ export const ui = {
     // no drop shadows
   },
   label: {
-    fontSize: 10, // 9-10px
+    fontSize: 12, // 9-10px
     letterSpacing: 0.8, // 0.5-1px
     textTransform: 'uppercase' as const,
     color: colors.ink.faint,
